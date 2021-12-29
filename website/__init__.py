@@ -34,16 +34,14 @@ def create_app():
 
     return app
 
+
 def is_database_exists():
     return path.exists("website/" + DB_NAME)
+
 
 def create_database(app):
     if not is_database_exists():
         db.create_all(app=app)
         print("Database created!")
 
-def get_form_value(value):
-    if value is None:
-        return None
 
-    return None if value.strip() == "" else value.strip()

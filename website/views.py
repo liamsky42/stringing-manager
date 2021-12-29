@@ -1,9 +1,12 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
-from .models import Brand, Customer, Racquet
-from . import db, get_form_value
+from .models import group_racquets_by_brand, Brand, Customer, Racquet, Stringing
+from . import db
+from .form_helpers import form_value_to_string, form_value_to_int, form_value_to_float, form_value_to_bool, \
+    form_value_to_datetime
 
 views = Blueprint("views", __name__)
+
 
 @views.route("/")
 @login_required
@@ -15,8 +18,8 @@ def home():
 @login_required
 def brands():
     if request.method == "POST":
-        name = get_form_value(request.form.get("name"))
-        url = get_form_value(request.form.get("url"))
+        name = form_value_to_string(request.form.get("name"))
+        url = form_value_to_string(request.form.get("url"))
 
         if (not name) or (not url):
             flash("please fill all required fields", category="error")
@@ -39,8 +42,8 @@ def brands():
 @login_required
 def customers():
     if request.method == "POST":
-        first_name = get_form_value(request.form.get("first_name"))
-        last_name = get_form_value(request.form.get("last_name"))
+        first_name = form_value_to_string(request.form.get("first_name"))
+        last_name = form_value_to_string(request.form.get("last_name"))
         racquet_ids = [int(id) for id in request.form.getlist("raquets")]
 
         racquets_to_add = Racquet.query.filter(Racquet.id.in_(racquet_ids)).all()
@@ -59,7 +62,6 @@ def customers():
                 for racquet_to_add in racquets_to_add:
                     new_customer.racquets.append(racquet_to_add)
 
-                print(new_customer.racquets)
                 db.session.add(new_customer)
                 db.session.commit()
 
@@ -68,27 +70,22 @@ def customers():
     customers = Customer.query.all()
     racquets = Racquet.query.join(Brand).order_by(Racquet.release_year.desc(), Brand.name, Racquet.model).all()
 
-    racquets_by_brands = {}
-    for racquet in racquets:
-        if racquet.brand.name in racquets_by_brands:
-            racquets_by_brands[racquet.brand.name].append(racquet)
-        else:
-            racquets_by_brands[racquet.brand.name] = [racquet]
+    racquets_by_brands = group_racquets_by_brand(racquets)
 
-    return render_template("customers.jinja2", user=current_user, customers=customers, racquets_by_brands=racquets_by_brands)
+    return render_template("customers.jinja2", user=current_user, customers=customers,
+                           racquets_by_brands=racquets_by_brands)
 
 
 @views.route("/racquets", methods=["GET", "POST"])
 @login_required
 def racquets():
     if request.method == "POST":
-        brand_id = get_form_value(request.form.get("brand"))
-        model = get_form_value(request.form.get("model"))
-        release_year = get_form_value(request.form.get("release_year"))
+        brand_id = form_value_to_string(request.form.get("brand"))
+        model = form_value_to_string(request.form.get("model"))
+        release_year = form_value_to_int(request.form.get("release_year"))
 
         if (not brand_id) or (not model) or (not release_year):
             flash("please fill all required fields", category="error")
-
         else:
             racquet = Racquet.query.filter_by(model=model, release_year=release_year, brand_id=brand_id).first()
             if racquet:
@@ -102,4 +99,53 @@ def racquets():
 
     brands = Brand.query.all()
     racquets = Racquet.query.join(Brand).order_by(Racquet.release_year.desc(), Brand.name, Racquet.model).all()
+
     return render_template("racquets.jinja2", user=current_user, brands=brands, racquets=racquets)
+
+
+@views.route("/stringings", methods=["GET", "POST"])
+@login_required
+def stringings():
+    if request.method == "POST":
+        customer_id = form_value_to_int(request.form.get("customer"))
+        racquet_id = form_value_to_int(request.form.get("raquet"))
+        tension = form_value_to_float(request.form.get("tension"))
+        string_type = form_value_to_string(request.form.get("string_type"))
+        include_string = form_value_to_bool(request.form.get("include_string"))
+        price = form_value_to_float(request.form.get("price"))
+        received_date = form_value_to_datetime(request.form.get("date_received"))
+        finished_date = form_value_to_datetime(request.form.get("date_finished"))
+        returned_date = form_value_to_datetime(request.form.get("date_returned"))
+
+        print(request.form.get("include_string"))
+
+        if not customer_id or not racquet_id or not tension or not price or not received_date:
+            flash("please fill all required fields", category="error")
+        else:
+            stringing = Stringing.query.filter_by(customer_id=customer_id, racquet_id=racquet_id, tension=tension,
+                                                string_type=string_type,
+                                                include_string=include_string, price=price, received_date=received_date,
+                                                finished_date=finished_date,
+                                                returned_date=returned_date).first()
+            if stringing:
+                flash("stringing already exists", category="error")
+            else:
+                new_stringing = Stringing(
+                    customer_id=customer_id, racquet_id=racquet_id, tension=tension, string_type=string_type,
+                    include_string=include_string, price=price, received_date=received_date,
+                    finished_date=finished_date,
+                    returned_date=returned_date)
+
+                db.session.add(new_stringing)
+                db.session.commit()
+
+        return redirect(url_for("views.stringings"))
+
+    stringings = Stringing.query.all()
+    racquets = Racquet.query.join(Brand).order_by(Racquet.release_year.desc(), Brand.name, Racquet.model).all()
+    customers = Customer.query.all()
+
+    racquets_by_brands = group_racquets_by_brand(racquets)
+
+    return render_template("stringings.jinja2", user=current_user, stringings=stringings, customers=customers,
+                           racquets_by_brands=racquets_by_brands)

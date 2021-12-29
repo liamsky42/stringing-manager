@@ -1,8 +1,9 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-from .models import User
-from werkzeug.security import generate_password_hash, check_password_hash
-from . import db, is_database_exists, get_form_value
 from flask_login import login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
+from .models import User
+from . import db, is_database_exists
+from .form_helpers import form_value_to_string
 
 auth = Blueprint("auth", __name__)
 
@@ -10,8 +11,8 @@ auth = Blueprint("auth", __name__)
 @auth.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = get_form_value(request.form.get("username"))
-        password = get_form_value(request.form.get("password"))
+        username = form_value_to_string(request.form.get("username"))
+        password = form_value_to_string(request.form.get("password"))
 
         user = User.query.filter_by(username=username).first()
         if user:
@@ -32,10 +33,10 @@ def login():
 @auth.route("/sign-up", methods=["GET", "POST"])
 def sign_up():
     if request.method == "POST":
-        username = get_form_value(request.form.get("username"))
-        name = get_form_value(request.form.get("name"))
-        password = get_form_value(request.form.get("password"))
-        confirmation = get_form_value(request.form.get("confirmation"))
+        username = form_value_to_string(request.form.get("username"))
+        name = form_value_to_string(request.form.get("name"))
+        password = form_value_to_string(request.form.get("password"))
+        confirmation = form_value_to_string(request.form.get("confirmation"))
 
         user = User.query.filter_by(username=username).first()
 

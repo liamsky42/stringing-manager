@@ -11,7 +11,8 @@
       <tr>
         <th>Brand</th>
         <th>Model</th>
-        <th colspan="2">Release Year</th>
+        <th>Release Year</th>
+        <th></th>
       </tr>
       </thead>
       <tbody>
@@ -19,9 +20,12 @@
         <tr>
           <td>{{ racquet.brand.name }}</td>
           <td>{{ racquet.model }}</td>
-          <td colspan="2">{{ racquet.release_year }}</td>
+          <td>{{ racquet.release_year }}</td>
+          <td></td>
         </tr>
       {% endfor %}
+      </tbody>
+      <tfoot>
       <tr>
         <td>
           <select class="form-select form-select-sm" required="required" name="brand">
@@ -52,7 +56,7 @@
           <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-plus"></i> Add Racquet</button>
         </td>
       </tr>
-      </tbody>
+      </tfoot>
     </table>
   </form>
 {% endblock %}

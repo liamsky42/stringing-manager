@@ -12,6 +12,7 @@
         <th>First name</th>
         <th>Last name</th>
         <th>Racquets</th>
+        <th></th>
       </tr>
       </thead>
       <tbody>
@@ -19,10 +20,10 @@
         <tr>
           <td>{{ customer.first_name }}</td>
           <td>{{ customer.last_name }}</td>
-          {% if customer.racquets|length == 0 %}
-            <td>No racquets</td>
-          {% else %}
-            <td>
+          <td>
+            {% if customer.racquets|length == 0 %}
+              No racquets
+            {% else %}
               <ul class="list-unstyled">
                 {% for racquet in customer.racquets %}
                   <li>
@@ -30,10 +31,13 @@
                   </li>
                 {% endfor %}
               </ul>
-            </td>
-          {% endif %}
+            {% endif %}
+          </td>
+          <td></td>
         </tr>
       {% endfor %}
+      </tbody>
+      <tfoot>
       <tr>
         <td>
           <input type="text"
@@ -68,7 +72,7 @@
           </button>
         </td>
       </tr>
-      </tbody>
+      </tfoot>
     </table>
   </form>
 {% endblock %}
