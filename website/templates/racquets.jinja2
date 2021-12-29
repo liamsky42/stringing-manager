@@ -1,0 +1,58 @@
+{% extends "layout.jinja2" %}
+
+{% block title %}
+  Racquets
+{% endblock %}
+
+{% block main %}
+  <form action="/racquets" method="post" class="row justify-content-center">
+    <table class="table table-striped ">
+      <thead>
+      <tr>
+        <th>Brand</th>
+        <th>Model</th>
+        <th colspan="2">Release Year</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for racquet in racquets %}
+        <tr>
+          <td>{{ racquet.brand.name }}</td>
+          <td>{{ racquet.model }}</td>
+          <td colspan="2">{{ racquet.release_year }}</td>
+        </tr>
+      {% endfor %}
+      <tr>
+        <td>
+          <select class="form-select form-select-sm" required="required" name="brand">
+            <option selected disabled="disabled" value="">Select Brand</option>
+            {% for brand in brands %}
+              <option value="{{ brand.id }}">{{ brand.name }}</option>
+            {% endfor %}
+          </select>
+        </td>
+        <td>
+          <input type="text"
+                 name="model"
+                 required="required"
+                 class="form-control form-control-sm"
+                 placeholder="Model Name"
+                 autocomplete="off"
+          />
+        </td>
+        <td>
+          <input type="text"
+                 name="release_year"
+                 required="required"
+                 class="form-control form-control-sm"
+                 placeholder="Release Year"
+          />
+        </td>
+        <td class="col-action">
+          <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-plus"></i> Add Racquet</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </form>
+{% endblock %}

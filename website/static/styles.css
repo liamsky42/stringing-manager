@@ -1,0 +1,33 @@
+body > header .nav-link {
+    color: rgba(255,255,255,.5);
+}
+
+body > header .nav-link:hover {
+    color: rgba(255,255,255, 1);
+}
+
+body > header .nav-link.active {
+    color: rgba(255,255,255, 1);
+}
+
+main img
+{
+    /* Constrain images on small screens */
+    max-width: 100%;
+}
+
+table
+{
+    text-align: left;
+}
+
+table .col-action {
+    width: 145px;
+    text-align: end;
+}
+
+.money
+{
+    text-align: right;
+}
+

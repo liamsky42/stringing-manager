@@ -1,0 +1,53 @@
+{% extends "layout.jinja2" %}
+
+{% block title %}
+  Brands
+{% endblock %}
+
+{% block main %}
+  <form action="/brands" method="post" class="row justify-content-center">
+    <table class="table table-striped ">
+      <thead>
+      <tr>
+        <th>Brand</th>
+        <th colspan="2">Url</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for brand in brands %}
+        <tr>
+          <td>{{ brand.name }}</td>
+          <td colspan="2">
+            {% if brand.url %}
+              <a href="{{ brand.url }}" target="_blank">Website</a>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      <tr>
+        <td>
+          <input type="text"
+                 name="name"
+                 required="required"
+                 class="form-control form-control-sm"
+                 placeholder="Name"
+                 autocomplete="off"
+          />
+        </td>
+        <td>
+          <input type="url"
+                 name="url"
+                 required="required"
+                 class="form-control form-control-sm"
+                 placeholder="Url"
+                 autocomplete="off"
+          />
+        </td>
+        <td class="col-action">
+          <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-plus"></i> Add Brand</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </form>
+{% endblock %}

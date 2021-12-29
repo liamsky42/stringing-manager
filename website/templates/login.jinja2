@@ -1,0 +1,31 @@
+{% extends "layout.jinja2" %}
+
+{% block title %}
+  Log in
+{% endblock %}
+
+{% block main %}
+  <form action="/login" method="post">
+    <div class="form-floating mb-3">
+      <input type="text"
+             name="username"
+             required="required"
+             class="form-control"
+             placeholder="Username"
+             autocomplete="off"
+             autofocus
+      />
+      <label for="floatingInput">Username</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="password"
+             name="password"
+             required="required"
+             class="form-control"
+             placeholder="Password"
+      />
+      <label for="floatingInput">Password</label>
+    </div>
+    <button class="btn btn-primary" type="submit">Log In</button>
+  </form>
+{% endblock %}

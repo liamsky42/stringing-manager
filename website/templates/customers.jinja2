@@ -1,0 +1,74 @@
+{% extends "layout.jinja2" %}
+
+{% block title %}
+  Customers
+{% endblock %}
+
+{% block main %}
+  <form action="/customers" method="post">
+    <table class="table table-striped ">
+      <thead>
+      <tr>
+        <th>First name</th>
+        <th>Last name</th>
+        <th>Racquets</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for customer in customers %}
+        <tr>
+          <td>{{ customer.first_name }}</td>
+          <td>{{ customer.last_name }}</td>
+          {% if customer.racquets|length == 0 %}
+            <td>No racquets</td>
+          {% else %}
+            <td>
+              <ul class="list-unstyled">
+                {% for racquet in customer.racquets %}
+                  <li>
+                    {{ racquet.model }} {% if racquet.release_year %}{{ (racquet.release_year) }}{% endif %}
+                  </li>
+                {% endfor %}
+              </ul>
+            </td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+      <tr>
+        <td>
+          <input type="text"
+                 name="first_name"
+                 required="required"
+                 class="form-control form-control-sm"
+                 placeholder="First name"
+                 autocomplete="off"
+          />
+        </td>
+        <td>
+          <input type="text"
+                 name="last_name"
+                 required="required"
+                 class="form-control form-control-sm"
+                 placeholder="Last name"
+          />
+        </td>
+        <td>
+          <select class="form-select form-select-sm" required="required" multiple="multiple" name="raquets">
+            {% for brand in racquets_by_brands %}
+              <optgroup label="{{ brand }}">
+                {% for racquet in racquets_by_brands[brand] %}
+                  <option value="{{ racquet.id }}">{{ racquet.model }} ({{ racquet.release_year }})</option>
+                {% endfor %}
+              </optgroup>
+            {% endfor %}
+          </select>
+        </td>
+        <td class="col-action">
+          <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-person-plus-fill"></i> Add Customer
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </form>
+{% endblock %}
