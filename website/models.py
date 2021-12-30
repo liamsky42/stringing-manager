@@ -29,6 +29,9 @@ class Brand(db.Model):
     url = db.Column(db.String(100))
     raquets = db.relationship("Racquet", backref='brand', lazy=True)
 
+    def __str__(self):
+        return self.name
+
     def __repr__(self):
         return f"Brand({self.name}, {self.url})"
 
@@ -47,6 +50,9 @@ class Racquet(db.Model):
 
     stringings = db.relationship("Stringing", backref='racquet', lazy=True)
 
+    def __str__(self):
+        return f"{self.model} ({self.release_year})"
+
     def __repr__(self):
         return f"Racquet({self.model}, {self.release_year})"
 
@@ -56,10 +62,12 @@ class Customer(db.Model):
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     stringings = db.relationship("Stringing", backref='customer', lazy=True)
-    payments = db.relationship("Payment", backref='customer', lazy=True)
     racquets = db.relationship("Racquet",
                                secondary=customer_racquet_association,
                                backref="customers")
+
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
 
     def __repr__(self):
         return f"Customer({self.first_name}, {self.last_name})"
@@ -76,7 +84,7 @@ class Stringing(db.Model):
     received_date = db.Column(db.DateTime(timezone=True), nullable=False, default=func.now())
     finished_date = db.Column(db.DateTime(timezone=True))
     returned_date = db.Column(db.DateTime(timezone=True))
-    payment = db.relationship("Payment", backref=backref("stringing", uselist=False), lazy=True)
+    payments = db.relationship("Payment", backref=backref("stringing", uselist=False), lazy=True)
 
     def __repr__(self):
         return f"Stringing({self.customer_id},{self.racquet_id},{self.tension},{self.string_type},{self.include_string},{self.price},{self.received_date},{self.finished_date},{self.returned_date})"
@@ -85,6 +93,5 @@ class Stringing(db.Model):
 class Payment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     stringing_id = db.Column(db.Integer, db.ForeignKey("stringing.id"), nullable=False)
-    customer_id = db.Column(db.Integer, db.ForeignKey("customer.id"), nullable=False)
     payed = db.Column(db.Float())
     payed_date = db.Column(db.DateTime(timezone=True), nullable=False, default=func.now())

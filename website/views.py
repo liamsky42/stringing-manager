@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
-from .models import group_racquets_by_brand, Brand, Customer, Racquet, Stringing
+from .models import group_racquets_by_brand, Brand, Customer, Racquet, Stringing, Payment
 from . import db
 from .form_helpers import form_value_to_string, form_value_to_int, form_value_to_float, form_value_to_bool, \
     form_value_to_datetime
@@ -117,16 +117,16 @@ def stringings():
         finished_date = form_value_to_datetime(request.form.get("date_finished"))
         returned_date = form_value_to_datetime(request.form.get("date_returned"))
 
-        print(request.form.get("include_string"))
-
         if not customer_id or not racquet_id or not tension or not price or not received_date:
             flash("please fill all required fields", category="error")
         else:
             stringing = Stringing.query.filter_by(customer_id=customer_id, racquet_id=racquet_id, tension=tension,
-                                                string_type=string_type,
-                                                include_string=include_string, price=price, received_date=received_date,
-                                                finished_date=finished_date,
-                                                returned_date=returned_date).first()
+                                                  string_type=string_type,
+                                                  include_string=include_string,
+                                                  price=price,
+                                                  received_date=received_date,
+                                                  finished_date=finished_date,
+                                                  returned_date=returned_date).first()
             if stringing:
                 flash("stringing already exists", category="error")
             else:
@@ -149,3 +149,31 @@ def stringings():
 
     return render_template("stringings.jinja2", user=current_user, stringings=stringings, customers=customers,
                            racquets_by_brands=racquets_by_brands)
+
+
+@views.route("/payments", methods=["GET", "POST"])
+@login_required
+def payments():
+    if request.method == "POST":
+        stringing_id = form_value_to_int(request.form.get("stringing"))
+        payed = form_value_to_float(request.form.get("payed"))
+        payed_date = form_value_to_datetime(request.form.get("date_payed"))
+
+        if not stringing_id or not payed or not payed_date:
+            flash("please fill all required fields", category="error")
+        else:
+            payment = Payment.query.filter_by(stringing_id=stringing_id, payed=payed, payed_date=payed_date).first()
+            if payment:
+                flash("payment already exists", category="error")
+            else:
+                new_payment = Payment(stringing_id=stringing_id, payed=payed, payed_date=payed_date)
+
+                db.session.add(new_payment)
+                db.session.commit()
+
+    stringings = Stringing.query.all()
+    payments = Payment.query.all()
+
+    args = request.args
+    print(args.get("id", default="", type=int))
+    return render_template("payment.jinja2", user=current_user, stringings=stringings, payments=payments)

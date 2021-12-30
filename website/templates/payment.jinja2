@@ -1,0 +1,125 @@
+{% extends "layout.jinja2" %}
+
+{% block title %}
+  Payments
+{% endblock %}
+
+{% block main %}
+
+  <table class="table table-striped ">
+    <thead>
+    <tr>
+      <th>Stringing</th>
+      <th class="money" style="width: 120px;">Payed</th>
+      <th>Pay Date</th>
+      <th class="align-middle text-center">Edit</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for payment in payments %}
+      {% set stringing = payment.stringing %}
+      <tr>
+        <td>
+          <div class="container">
+            <div class="row">
+              <div class="col">
+                <dl>
+                  <dt>Customer</dt>
+                  <dd>{{ stringing.customer.full_name() }}</dd>
+
+                  <dt>Racquet</dt>
+                  <dd>{{ stringing.racquet.brand }} {{ stringing.racquet }}</dd>
+
+                  <dt>Tension</dt>
+                  <dd>{{ stringing.tension }}</dd>
+
+                  <dt>String Type</dt>
+                  <dd>{{ stringing.string_type }}</dd>
+
+                  <dt>Include String</dt>
+                  <dd>
+                    <input class="form-check-input" type="checkbox" value="1"
+                           {% if stringing.include_string %}checked="checked"{% endif %} disabled="disabled"/>
+                  </dd>
+                </dl>
+              </div>
+              <div class="col">
+                <dl>
+                  <dt>Price</dt>
+                  <dd>{{ "$%.2f"|format(stringing.price) }}</dd>
+
+                  <dt>Recived On</dt>
+                  <dd>{% if stringing.received_date %}{{ stringing.received_date.strftime("%d/%m/%Y") }}{% else %}
+                    -{% endif %}</dd>
+
+                  <dt>Finished On</dt>
+                  <dd>{% if stringing.finished_date %}{{ stringing.finished_date.strftime("%d/%m/%Y") }}{% else %}
+                    -{% endif %}</dd>
+
+                  <dt>Returned On</dt>
+                  <dd>{% if stringing.returned_date %}{{ stringing.returned_date.strftime("%d/%m/%Y") }}{% else %}
+                    -{% endif %}</dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </td>
+        <td class="money">
+          {{ "$%.2f"|format(payment.payed) }}
+        </td>
+        <td>
+          {{ payment.payed_date.strftime("%d/%m/%Y") }}
+        </td>
+        <td class="col-action align-middle text-center">
+          <form action="/payments" method="get">
+            <input type="hidden" name="id" value="{{ payment.id }}"/>
+            <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-pencil-square"></i> Edit</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+    <tr>
+      <form action="/payments" method="post">
+        <td>
+          <select class="form-select form-select-sm" required="required" name="stringing">
+            <option selected disabled="disabled" value="">Select Stringing</option>
+            {% for stringing in stringings %}
+              <option
+                  value="{{ stringing.id }}">{{ stringing.received_date.strftime("%d/%m/%Y") }} {{ stringing.customer.first_name }} {{ stringing.customer.last_name }} {{ stringing.racquet.brand.name }} {{ stringing.racquet.model }}
+                ({{ stringing.racquet.release_year }}) - {{ "$%.2f"|format(stringing.price) }}</option>
+            {% endfor %}
+          </select>
+        </td>
+        <td>
+          <div class="input-group input-group-sm">
+            <div class="input-group-text">$</div>
+            <input type="number"
+                   name="payed"
+                   required="required"
+                   class="form-control"
+                   placeholder="Payed"
+                   min="0"
+                   step="0.01"
+            />
+          </div>
+        </td>
+        <td>
+          <input type="date"
+                 name="date_payed"
+                 required="required"
+                 class="form-control form-control-sm"
+                 placeholder="Pay Date"
+          />
+        </td>
+        <td class="col-action">
+          <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-person-plus-fill"></i> Add Payment
+          </button>
+        </td>
+      </form>
+    </tr>
+    </tfoot>
+  </table>
+
+{% endblock %}

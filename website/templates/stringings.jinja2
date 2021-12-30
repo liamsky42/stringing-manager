@@ -37,10 +37,10 @@
                    {% if stringing.include_string %}checked="checked"{% endif %} disabled="disabled"/>
           </td>
           <td>{{ "$%.2f"|format(stringing.price) }}</td>
-          <td>{% if stringing.received_date %}{{ stringing.received_date }}{% else %}-{% endif %}</td>
-          <td>{% if stringing.finished_date %}{{ stringing.finished_date }}{% else %}-{% endif %}</td>
-          <td>{% if stringing.returned_date %}{{ stringing.returned_date }}{% else %}-{% endif %}</td>
-          <td>{% if stringing.payment %}{{ stringing.payment }}{% else %}-{% endif %}</td>
+          <td>{% if stringing.received_date %}{{ stringing.received_date.strftime("%d/%m/%Y") }}{% else %}-{% endif %}</td>
+          <td>{% if stringing.finished_date %}{{ stringing.finished_date.strftime("%d/%m/%Y") }}{% else %}-{% endif %}</td>
+          <td>{% if stringing.returned_date %}{{ stringing.returned_date.strftime("%d/%m/%Y") }}{% else %}-{% endif %}</td>
+          <td>{% if stringing.payments and stringing.payments|length > 0 %}{{ "$%.2f"|format(stringing.payments|sum(attribute='payed')) }}{% else %}-{% endif %}</td>
           <td></td>
         </tr>
       {% endfor %}
@@ -134,4 +134,8 @@
       </tfoot>
     </table>
   </form>
+{% endblock %}
+
+{% block script %}
+  const racquets = ['racquet1', 'racquet2'];
 {% endblock %}

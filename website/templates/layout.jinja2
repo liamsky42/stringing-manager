@@ -59,7 +59,7 @@
   </li>
 {%- endmacro %}
 
-<header>
+<header class="fixed-top">
   <div class="px-3 py-2 bg-dark text-white">
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
       <a href="/"
@@ -88,12 +88,12 @@
       <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
         {% if user.is_authenticated %}
           {% for path, name, icon in [
-                ("/", "Dashboard", "graph-up"),
-                ("/stringings", "Stringings", "table"),
-                ("/payments", "Payments", "coin"),
                 ("/brands", "Brands", "bag"),
                 ("/racquets", "Racquets", ""),
                 ("/customers", "Customers", "people-fill"),
+                ("/stringings", "Stringings", "table"),
+                ("/payments", "Payments", "coin"),
+                ("/", "Dashboard", "graph-up"),
                 ("/logout", "Logout", "person-circle"),
               ] %}
             {{ nav_item(path, name, icon) }}
@@ -121,7 +121,11 @@
 <footer class="small text-center text-muted">
 </footer>
 
+{% block include_external_script %}{% endblock %}
+
 <script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script>
+{% block include_internal_script %}{% endblock %}
+<script>{% block script %}{% endblock %}</script>
 
 </body>
 </html>

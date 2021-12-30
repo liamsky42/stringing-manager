@@ -1,3 +1,7 @@
+body {
+    padding-top: 80px;
+}
+
 body > header .nav-link {
     color: rgba(255,255,255,.5);
 }
