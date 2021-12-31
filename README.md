@@ -1,5 +1,9 @@
 # Stringing Manager
 
+#### Video Demo
+
+
+#### Description
 This is an application for management stringings data.
 
 In Tennis the racquets' strings often break from an instensive play and need to be replaced - a process called "

@@ -72,10 +72,6 @@
           {{ payment.payed_date.strftime("%d/%m/%Y") }}
         </td>
         <td class="col-action align-middle text-center">
-          <form action="/payments" method="get">
-            <input type="hidden" name="id" value="{{ payment.id }}"/>
-            <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-pencil-square"></i> Edit</button>
-          </form>
         </td>
       </tr>
     {% endfor %}
