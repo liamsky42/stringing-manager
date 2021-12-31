@@ -26,8 +26,13 @@ table
 }
 
 table .col-action {
-    width: 145px;
+    width: 190px;
     text-align: end;
+}
+
+select optgroup,
+select option {
+    background-color: #424242;
 }
 
 .money

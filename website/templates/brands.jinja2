@@ -5,8 +5,9 @@
 {% endblock %}
 
 {% block main %}
+  <h1 class="display-2"><strong>Brands <i class="bi bi-bag"></i></strong></h1>
   <form action="/brands" method="post" class="row justify-content-center">
-    <table class="table table-striped ">
+    <table class="table table-striped table-dark table-hover table-bordered">
       <thead>
       <tr>
         <th>Brand</th>
@@ -30,6 +31,7 @@
       <tfoot>
       <tr>
         <td>
+          {% call input_control(label="Name") %}
           <input type="text"
                  name="name"
                  required="required"
@@ -37,8 +39,10 @@
                  placeholder="Name"
                  autocomplete="off"
           />
+          {% endcall %}
         </td>
         <td>
+          {% call input_control(label="Url") %}
           <input type="url"
                  name="url"
                  required="required"
@@ -46,6 +50,7 @@
                  placeholder="Url"
                  autocomplete="off"
           />
+          {% endcall %}
         </td>
         <td class="col-action">
           <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-plus"></i> Add Brand</button>
