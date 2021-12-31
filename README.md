@@ -1,7 +1,7 @@
 # Stringing Manager
 
 #### Video Demo
-
+https://youtu.be/1Amp0bv5lV0
 
 #### Description
 This is an application for management stringings data.
