@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
-from sqlalchemy import func, or_
+from sqlalchemy import func, or_, desc
 from .models import group_racquets_by_brand, Brand, Customer, Racquet, Stringing, Payment
 from . import db
 from .form_helpers import form_value_to_string, form_value_to_int, form_value_to_float, form_value_to_bool, \
@@ -49,13 +49,14 @@ def home():
         stringings_chart_data["date"].append(date.strftime('%m/%Y'))
         stringings_chart_data["count"].append(count)
 
-    # table data
-    # stringings = Stringing.query.group_by(Stringing.customer_id).all()
+    # Remaining Payments data
     stringings = Stringing.query.join(Customer).join(Payment, isouter=True).with_entities(
         Customer,
         func.sum(Stringing.price),
         func.sum(Payment.payed),
-        func.sum(Stringing.price) - func.sum(Payment.payed)
+        (func.sum(Stringing.price) - func.sum(Payment.payed)).label("remaining")
+    ).order_by(
+        desc("remaining")
     ).having(
         or_(Payment.payed == None, func.sum(Stringing.price) != func.sum(Payment.payed))
     ).group_by(Customer.id).all()
