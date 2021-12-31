@@ -111,6 +111,33 @@ def brands():
     return render_template("brands.jinja2", user=current_user, brands=brands)
 
 
+@views.route("/racquets", methods=["GET", "POST"])
+@login_required
+def racquets():
+    if request.method == "POST":
+        brand_id = form_value_to_string(request.form.get("brand"))
+        model = form_value_to_string(request.form.get("model"))
+        release_year = form_value_to_int(request.form.get("release_year"))
+
+        if (not brand_id) or (not model) or (not release_year):
+            flash("please fill all required fields", category="error")
+        else:
+            racquet = Racquet.query.filter_by(model=model, release_year=release_year, brand_id=brand_id).first()
+            if racquet:
+                flash("racquet already exists", category="error")
+            else:
+                new_racquet = Racquet(model=model, release_year=release_year, brand_id=brand_id)
+                db.session.add(new_racquet)
+                db.session.commit()
+
+        return redirect(url_for("views.racquets"))
+
+    brands = Brand.query.all()
+    racquets = Racquet.query.join(Brand).order_by(Racquet.release_year.desc(), Brand.name, Racquet.model).all()
+
+    return render_template("racquets.jinja2", user=current_user, brands=brands, racquets=racquets)
+
+
 @views.route("/customers", methods=["GET", "POST"])
 @login_required
 def customers():
@@ -147,33 +174,6 @@ def customers():
 
     return render_template("customers.jinja2", user=current_user, customers=customers,
                            racquets_by_brands=racquets_by_brands)
-
-
-@views.route("/racquets", methods=["GET", "POST"])
-@login_required
-def racquets():
-    if request.method == "POST":
-        brand_id = form_value_to_string(request.form.get("brand"))
-        model = form_value_to_string(request.form.get("model"))
-        release_year = form_value_to_int(request.form.get("release_year"))
-
-        if (not brand_id) or (not model) or (not release_year):
-            flash("please fill all required fields", category="error")
-        else:
-            racquet = Racquet.query.filter_by(model=model, release_year=release_year, brand_id=brand_id).first()
-            if racquet:
-                flash("racquet already exists", category="error")
-            else:
-                new_racquet = Racquet(model=model, release_year=release_year, brand_id=brand_id)
-                db.session.add(new_racquet)
-                db.session.commit()
-
-        return redirect(url_for("views.racquets"))
-
-    brands = Brand.query.all()
-    racquets = Racquet.query.join(Brand).order_by(Racquet.release_year.desc(), Brand.name, Racquet.model).all()
-
-    return render_template("racquets.jinja2", user=current_user, brands=brands, racquets=racquets)
 
 
 @views.route("/stringings", methods=["GET", "POST"])
@@ -220,15 +220,14 @@ def stringings():
                 if stringing:
                     flash("stringing already exists", category="error")
                 else:
-                    pass
-                    # new_stringing = Stringing(
-                    #     customer_id=customer_id, racquet_id=racquet_id, tension=tension, string_type=string_type,
-                    #     include_string=include_string, price=price, received_date=received_date,
-                    #     finished_date=finished_date,
-                    #     returned_date=returned_date)
-                    #
-                    # db.session.add(new_stringing)
-                    # db.session.commit()
+                    new_stringing = Stringing(
+                        customer_id=customer_id, racquet_id=racquet_id, tension=tension, string_type=string_type,
+                        include_string=include_string, price=price, received_date=received_date,
+                        finished_date=finished_date,
+                        returned_date=returned_date)
+
+                    db.session.add(new_stringing)
+                    db.session.commit()
 
         return redirect(url_for("views.stringings"))
 

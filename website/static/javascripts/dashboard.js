@@ -53,10 +53,6 @@ function addCustomerStringingsChart() {
     options: {
       backgroundColor: 'rgba(255,255,255,0.1)',
       plugins: {
-        title: {
-          display: true,
-          text: 'Number of stringins by customers'
-        },
         legend: {
           position: 'bottom'
         }
@@ -100,12 +96,6 @@ function addRacquetsByBrandChart() {
     },
     options: {
       responsive: true,
-      plugins: {
-        title: {
-          display: true,
-          text: 'Number of racquets by brand'
-        }
-      }
     }
   });
 }
@@ -133,10 +123,6 @@ function addStringingsChartData() {
     options: {
       backgroundColor: 'rgba(255,255,255,0.1)',
       plugins: {
-        title: {
-          display: true,
-          text: 'Number of stringins per month/year'
-        },
         legend: {
           display: false
         }

@@ -5,27 +5,33 @@
 {% endblock %}
 
 {% block main %}
-  <form action="/login" method="post">
-    <div class="form-floating mb-3">
-      <input type="text"
-             name="username"
-             required="required"
-             class="form-control"
-             placeholder="Username"
-             autocomplete="off"
-             autofocus
-      />
-      <label for="floatingInput">Username</label>
+  <div class="container d-flex justify-content-center">
+    <div style="width: 400px">
+      <form action="/login" method="post">
+        <div class="form-floating mb-3">
+          <input type="text"
+                 name="username"
+                 required="required"
+                 class="form-control"
+                 placeholder="Username"
+                 autocomplete="off"
+                 autofocus
+          />
+          <label for="floatingInput">Username</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input type="password"
+                 name="password"
+                 required="required"
+                 class="form-control"
+                 placeholder="Password"
+          />
+          <label for="floatingInput">Password</label>
+        </div>
+        <div class="text-center">
+          <button class="btn btn-primary" type="submit">Log In</button>
+        </div>
+      </form>
     </div>
-    <div class="form-floating mb-3">
-      <input type="password"
-             name="password"
-             required="required"
-             class="form-control"
-             placeholder="Password"
-      />
-      <label for="floatingInput">Password</label>
-    </div>
-    <button class="btn btn-primary" type="submit">Log In</button>
-  </form>
+  </div>
 {% endblock %}

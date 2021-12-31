@@ -5,47 +5,53 @@
 {% endblock %}
 
 {% block main %}
-  <form action="/sign-up" method="post">
-    <div class="form-floating mb-3">
-      <input type="text"
-             name="username"
-             required="required"
-             class="form-control"
-             placeholder="Username"
-             autocomplete="off"
-             autofocus
-      />
-      <label for="floatingInput">Username</label>
+  <div class="container d-flex justify-content-center">
+    <div style="width: 400px">
+      <form action="/sign-up" method="post">
+        <div class="form-floating mb-3">
+          <input type="text"
+                 name="username"
+                 required="required"
+                 class="form-control"
+                 placeholder="Username"
+                 autocomplete="off"
+                 autofocus
+          />
+          <label for="floatingInput">Username</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input type="text"
+                 name="name"
+                 required="required"
+                 class="form-control"
+                 placeholder="Name"
+                 autocomplete="off"
+                 autofocus
+          />
+          <label for="floatingInput">Name</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input type="password"
+                 name="password"
+                 required="required"
+                 class="form-control"
+                 placeholder="Password"
+          />
+          <label for="floatingInput">Password</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input type="password"
+                 name="confirmation"
+                 required="required"
+                 class="form-control"
+                 placeholder="Confirm Password"
+          />
+          <label for="floatingInput">Confirm Password</label>
+        </div>
+        <div class="text-center">
+          <button class="btn btn-primary" type="submit">Sign Up</button>
+        </div>
+      </form>
     </div>
-    <div class="form-floating mb-3">
-      <input type="text"
-             name="name"
-             required="required"
-             class="form-control"
-             placeholder="Name"
-             autocomplete="off"
-             autofocus
-      />
-      <label for="floatingInput">Name</label>
-    </div>
-    <div class="form-floating mb-3">
-      <input type="password"
-             name="password"
-             required="required"
-             class="form-control"
-             placeholder="Password"
-      />
-      <label for="floatingInput">Password</label>
-    </div>
-    <div class="form-floating mb-3">
-      <input type="password"
-             name="confirmation"
-             required="required"
-             class="form-control"
-             placeholder="Confirm Password"
-      />
-      <label for="floatingInput">Confirm Password</label>
-    </div>
-    <button class="btn btn-primary" type="submit">Sign Up</button>
-  </form>
+  </div>
 {% endblock %}

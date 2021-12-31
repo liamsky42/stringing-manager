@@ -20,7 +20,6 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(100), nullable=False)
     username = db.Column(db.String(20), unique=True, nullable=False)
     name = db.Column(db.String(50))
-    # notes = db.relationship("Note")
 
 
 class Brand(db.Model):

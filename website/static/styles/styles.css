@@ -53,8 +53,12 @@ select option {
     background-color: #424242;
 }
 
-.money
-{
+.money {
     text-align: right;
+}
+
+.chart-container {
+    width: 400px;
+    height: 500px;
 }
 
