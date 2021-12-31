@@ -5,16 +5,40 @@
 {% endblock %}
 
 {% block main %}
-  <table>
-    <tr>
-      <td>
-        strings data
-      </td>
-    </tr>
-    <tr>
-      <td>
-        here
-      </td>
-    </tr>
-  </table>
+  <div class="cintainer">
+    <div class="row">
+      <div class="col">
+        <div style="width: 500px; height: 500px">
+          <canvas id="customer-stringings-chart" width="400" height="400"></canvas>
+        </div>
+      </div>
+      <div class="col">
+        <div style="width: 500px; height: 500px">
+          <canvas id="racquets-by-brand-chart" width="400" height="400"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}
+
+{% block include_external_script %}
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"
+          crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block script %}
+  const customerStringingsChartData = {
+  labels: ['{{ customers_chart_data["names"]|join('\', \'') }}'],
+  data: [{{ customers_chart_data["stringings"]|join(', ') }}],
+  };
+  const racquetsByBrandChart = {
+  labels: ['{{ racquets_chart_data["brands"]|join('\', \'') }}'],
+  data: [{{ racquets_chart_data["racquets"]|join(', ') }}],
+  };
+{% endblock %}
+
+{% block include_internal_script %}
+  <script type="text/javascript" src="/static/dashboard.js"></script>
 {% endblock %}

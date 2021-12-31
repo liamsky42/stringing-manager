@@ -11,7 +11,24 @@ views = Blueprint("views", __name__)
 @views.route("/")
 @login_required
 def home():
-    return render_template("index.jinja2", user=current_user)
+    customers = Customer.query.all()
+    customers_chart_data = {
+        "names": [customer.full_name() for customer in customers],
+        "stringings": [len(customer.stringings) for customer in customers]
+    }
+
+    racquets = Racquet.query.join(Brand).order_by(Racquet.release_year.desc(), Brand.name, Racquet.model).all()
+    racquets_by_brands = group_racquets_by_brand(racquets)
+
+    print(racquets_by_brands)
+
+    racquets_chart_data = {
+        "brands": [brand_name for brand_name in racquets_by_brands],
+        "racquets": [len(racquets_by_brands[brand_name]) for brand_name in racquets_by_brands]
+
+    }
+    racquets = Racquet.query.all()
+    return render_template("index.jinja2", user=current_user, customers_chart_data=customers_chart_data, racquets_chart_data=racquets_chart_data)
 
 
 @views.route("/brands", methods=["GET", "POST"])
