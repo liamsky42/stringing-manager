@@ -15,9 +15,9 @@
 <body>
 
 {% macro flash_alert(category, message) -%}
-  {% set alert_class = "danger" if category == "error" else category %}
+  {% set alert_class = "danger" if category == "error" else ("info" if category == "message" else message) %}
   <div class="alert alert-{{ alert_class }} alert-dismissible border fade show" role="alert">
-    <i class="bi bi-exclamation-triangle"></i> {{ message }}
+    <i class="bi bi-{{ "exclamation-triangle" if category == "error" else ("check-circle" if category == "success" else "info-circle") }}"></i> {{ message }}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
 {%- endmacro %}
