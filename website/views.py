@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
+from sqlalchemy import func
 from .models import group_racquets_by_brand, Brand, Customer, Racquet, Stringing, Payment
 from . import db
 from .form_helpers import form_value_to_string, form_value_to_int, form_value_to_float, form_value_to_bool, \
@@ -11,24 +12,45 @@ views = Blueprint("views", __name__)
 @views.route("/")
 @login_required
 def home():
+    # Customer data
     customers = Customer.query.all()
     customers_chart_data = {
-        "names": [customer.full_name() for customer in customers],
-        "stringings": [len(customer.stringings) for customer in customers]
+        "names": [],
+        "stringings": []
     }
 
+    for customer in customers:
+        customers_chart_data["names"].append(customer.full_name())
+        customers_chart_data["stringings"].append(len(customer.stringings))
+
+    # Racquets data
     racquets = Racquet.query.join(Brand).order_by(Racquet.release_year.desc(), Brand.name, Racquet.model).all()
     racquets_by_brands = group_racquets_by_brand(racquets)
 
-    print(racquets_by_brands)
-
     racquets_chart_data = {
-        "brands": [brand_name for brand_name in racquets_by_brands],
-        "racquets": [len(racquets_by_brands[brand_name]) for brand_name in racquets_by_brands]
-
+        "brands": [],
+        "racquets": []
     }
-    racquets = Racquet.query.all()
-    return render_template("index.jinja2", user=current_user, customers_chart_data=customers_chart_data, racquets_chart_data=racquets_chart_data)
+
+    for brand_name in racquets_by_brands:
+        racquets_chart_data["brands"].append(brand_name)
+        racquets_chart_data["racquets"].append(len(racquets_by_brands[brand_name]))
+
+    # Stringings data
+    stringings_data = Stringing.query.with_entities(Stringing.received_date, func.count(Stringing.id)).group_by(
+        func.strftime('%y', Stringing.received_date), func.strftime('%m', Stringing.received_date)).all()
+
+    stringings_chart_data = {
+        "date": [],
+        "count": []
+    }
+
+    for date, count in stringings_data:
+        stringings_chart_data["date"].append(date.strftime('%m/%Y'))
+        stringings_chart_data["count"].append(count)
+
+    return render_template("index.jinja2", user=current_user, customers_chart_data=customers_chart_data,
+                           racquets_chart_data=racquets_chart_data, stringings_chart_data=stringings_chart_data)
 
 
 @views.route("/brands", methods=["GET", "POST"])

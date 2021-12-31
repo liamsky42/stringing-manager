@@ -21,6 +21,7 @@ console.log(Chart.defaults);
 Chart.defaults.scale.grid.borderColor = 'rgba(255,255,255,0.5)';
 Chart.defaults.scale.grid.color = 'rgba(255,255,255,0.5)';
 Chart.defaults.color = 'rgba(255,255,255,0.5)';
+Chart.defaults.plugins.legend.position = 'bottom';
 
 function addCustomerStringingsChart() {
   const ctx = document.getElementById('customer-stringings-chart');
@@ -29,30 +30,49 @@ function addCustomerStringingsChart() {
     return;
   }
 
+  const datasets = [];
+
+  for (let i = 0; i < customerStringingsChartData.data.length; i++) {
+    datasets.push({
+      label: customerStringingsChartData.labels[i],
+      data: [customerStringingsChartData.data[i]],
+      backgroundColor: BACKGROUND_COLORS[i % BACKGROUND_COLORS.length],
+      borderColor: BORDER_COLORS[i % BACKGROUND_COLORS.length],
+      borderWidth: 2
+    })
+  }
+
   ctx.getContext('2d');
   const myChart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: customerStringingsChartData["labels"],
-      datasets: [{
-        label: 'Number of stringings',
-        data: customerStringingsChartData["data"],
-        backgroundColor: BACKGROUND_COLORS,
-        borderColor: BORDER_COLORS,
-        borderWidth: 2
-      }]
+      labels: [''],
+      datasets: datasets,
     },
     options: {
       backgroundColor: 'rgba(255,255,255,0.1)',
+      plugins: {
+        title: {
+          display: true,
+          text: 'Number of stringins by customers'
+        },
+        legend: {
+          position: 'bottom'
+        }
+      },
       scales: {
+        x: {
+          pointLabels: {
+            display: false,
+          }
+        },
         y: {
           beginAtZero: true,
           ticks: {
-            // forces step size to be 50 units
             stepSize: 1
           }
         }
-      }
+      },
     }
   });
 }
@@ -80,9 +100,6 @@ function addRacquetsByBrandChart() {
     options: {
       responsive: true,
       plugins: {
-        legend: {
-          position: 'top',
-        },
         title: {
           display: true,
           text: 'Number of racquets by brand'
@@ -92,5 +109,48 @@ function addRacquetsByBrandChart() {
   });
 }
 
+function addStringingsChartData() {
+  const ctx = document.getElementById('stringings-chart');
+
+  if (!ctx) {
+    return;
+  }
+
+  const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: stringingsChartData.labels,
+      datasets: [{
+        label: 'Number of stringings per month/year',
+        data: stringingsChartData.data,
+        backgroundColor: BACKGROUND_COLORS[0],
+        borderColor: BORDER_COLORS[0],
+        borderWidth: 2
+      }]
+    },
+    options: {
+      backgroundColor: 'rgba(255,255,255,0.1)',
+      plugins: {
+        title: {
+          display: true,
+          text: 'Number of stringins per month/year'
+        },
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1
+          }
+        }
+      }
+    }
+  });
+}
+
+addStringingsChartData();
 addCustomerStringingsChart();
 addRacquetsByBrandChart();

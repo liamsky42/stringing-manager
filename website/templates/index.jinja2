@@ -5,17 +5,20 @@
 {% endblock %}
 
 {% block main %}
-  <div class="cintainer">
-    <div class="row">
-      <div class="col">
-        <div style="width: 500px; height: 500px">
-          <canvas id="customer-stringings-chart" width="400" height="400"></canvas>
-        </div>
+  <div class="row">
+    <div class="col">
+      <div style="width: 500px; height: 500px">
+        <canvas id="customer-stringings-chart" width="400" height="400"></canvas>
       </div>
-      <div class="col">
-        <div style="width: 500px; height: 500px">
-          <canvas id="racquets-by-brand-chart" width="400" height="400"></canvas>
-        </div>
+    </div>
+    <div class="col">
+      <div style="width: 500px; height: 500px">
+        <canvas id="racquets-by-brand-chart" width="400" height="400"></canvas>
+      </div>
+    </div>
+    <div class="col">
+      <div style="width: 500px; height: 500px">
+        <canvas id="stringings-chart" width="400" height="400"></canvas>
       </div>
     </div>
   </div>
@@ -30,12 +33,16 @@
 
 {% block script %}
   const customerStringingsChartData = {
-  labels: ['{{ customers_chart_data["names"]|join('\', \'') }}'],
-  data: [{{ customers_chart_data["stringings"]|join(', ') }}],
+    labels: ['{{ customers_chart_data["names"]|join('\', \'') }}'],
+    data: [{{ customers_chart_data["stringings"]|join(', ') }}],
   };
   const racquetsByBrandChart = {
-  labels: ['{{ racquets_chart_data["brands"]|join('\', \'') }}'],
-  data: [{{ racquets_chart_data["racquets"]|join(', ') }}],
+    labels: ['{{ racquets_chart_data["brands"]|join('\', \'') }}'],
+    data: [{{ racquets_chart_data["racquets"]|join(', ') }}],
+  };
+  const stringingsChartData = {
+    labels: ['{{ stringings_chart_data["date"]|join('\', \'') }}'],
+    data: [{{ stringings_chart_data["count"]|join(', ') }}],
   };
 {% endblock %}
 

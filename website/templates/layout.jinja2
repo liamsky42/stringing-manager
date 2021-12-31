@@ -128,7 +128,7 @@
   {% endif %}
 {% endwith %}
 
-<main class="{% if url_for(request.endpoint) != '/stringings' %}container{% endif %} p-5">
+<main class="{% if url_for(request.endpoint) != '/stringings' and url_for(request.endpoint) != '/' %}container{% endif %} p-5">
   {% block main %}{% endblock %}
 </main>
 
