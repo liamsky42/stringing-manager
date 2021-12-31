@@ -2,8 +2,14 @@ body {
     padding-top: 80px;
 }
 
+body > header .nav {
+    align-items: stretch;
+}
+
 body > header .nav-link {
     color: rgba(255,255,255,.5);
+    height: 100%;
+    justify-content: space-between;
 }
 
 body > header .nav-link:hover {
@@ -12,6 +18,10 @@ body > header .nav-link:hover {
 
 body > header .nav-link.active {
     color: rgba(255,255,255, 1);
+}
+
+.title-separator {
+    margin-bottom: 60px;
 }
 
 main img

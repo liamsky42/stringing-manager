@@ -1,6 +1,6 @@
 const BACKGROUND_COLORS = [
-  'rgba(255, 99, 132, 0.7)',
   'rgba(54, 162, 235, 0.7)',
+  'rgba(255, 99, 132, 0.7)',
   'rgba(255, 206, 86, 0.7)',
   'rgba(75, 192, 192, 0.2)',
   'rgba(153, 102, 255, 0.2)',
@@ -8,8 +8,8 @@ const BACKGROUND_COLORS = [
 ];
 
 const BORDER_COLORS = [
-  'rgba(255, 99, 132, 1)',
   'rgba(54, 162, 235, 1)',
+  'rgba(255, 99, 132, 1)',
   'rgba(255, 206, 86, 1)',
   'rgba(75, 192, 192, 1)',
   'rgba(153, 102, 255, 1)',
@@ -38,7 +38,8 @@ function addCustomerStringingsChart() {
       data: [customerStringingsChartData.data[i]],
       backgroundColor: BACKGROUND_COLORS[i % BACKGROUND_COLORS.length],
       borderColor: BORDER_COLORS[i % BACKGROUND_COLORS.length],
-      borderWidth: 2
+      borderWidth: 2,
+      borderRadius: 10,
     })
   }
 
@@ -125,7 +126,8 @@ function addStringingsChartData() {
         data: stringingsChartData.data,
         backgroundColor: BACKGROUND_COLORS[0],
         borderColor: BORDER_COLORS[0],
-        borderWidth: 2
+        borderWidth: 2,
+        borderRadius: 10,
       }]
     },
     options: {

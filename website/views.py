@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from .models import group_racquets_by_brand, Brand, Customer, Racquet, Stringing, Payment
 from . import db
 from .form_helpers import form_value_to_string, form_value_to_int, form_value_to_float, form_value_to_bool, \
@@ -49,8 +49,41 @@ def home():
         stringings_chart_data["date"].append(date.strftime('%m/%Y'))
         stringings_chart_data["count"].append(count)
 
+    # table data
+    # stringings = Stringing.query.group_by(Stringing.customer_id).all()
+    stringings = Stringing.query.join(Customer).join(Payment, isouter=True).with_entities(
+        Customer,
+        func.sum(Stringing.price),
+        func.sum(Payment.payed),
+        func.sum(Stringing.price) - func.sum(Payment.payed)
+    ).having(
+        or_(Payment.payed == None, func.sum(Stringing.price) != func.sum(Payment.payed))
+    ).group_by(Customer.id).all()
+
+    payment_table_data = {
+        "rows": [],
+        "totals": [0] * 3
+    }
+
+    for customer, total_price, total_payed, total_remaining in stringings:
+        if total_payed is None:
+            total_payed = 0
+            total_remaining = total_price
+
+        payment_table_data["rows"].append({
+            "customer": customer.full_name(),
+            "total_price": total_price,
+            "total_payed": total_payed,
+            "total_remaining": total_remaining
+        })
+
+        payment_table_data["totals"][0] += total_price
+        payment_table_data["totals"][1] += total_payed
+        payment_table_data["totals"][2] += total_remaining
+
     return render_template("index.jinja2", user=current_user, customers_chart_data=customers_chart_data,
-                           racquets_chart_data=racquets_chart_data, stringings_chart_data=stringings_chart_data)
+                           racquets_chart_data=racquets_chart_data, stringings_chart_data=stringings_chart_data,
+                           payment_table_data=payment_table_data)
 
 
 @views.route("/brands", methods=["GET", "POST"])

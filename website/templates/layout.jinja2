@@ -77,7 +77,7 @@
   <nav class="px-3 py-2 navbar-dark bg-dark">
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
       <a href="/"
-         class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none fs-4">
+         class="navbar-brand d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none fs-2">
         <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
              xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
              viewBox="0 0 412.425 412.425" xml:space="preserve" class="me-2" style="width: 45px;">
@@ -128,7 +128,7 @@
   {% endif %}
 {% endwith %}
 
-<main class="{% if url_for(request.endpoint) != '/stringings' and url_for(request.endpoint) != '/' %}container{% endif %} p-5">
+<main class="p-5">
   {% block main %}{% endblock %}
 </main>
 
