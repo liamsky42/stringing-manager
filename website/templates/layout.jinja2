@@ -5,17 +5,17 @@
   <meta name="viewport" content="initial-scale=1, width=device-width">
   <!-- CSS only -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css"/>
-  <link rel="stylesheet" href="/static/bootstrap_dark/mdb.dark.min.css"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap_dark/mdb.dark.min.css') }}"/>
   <!-- https://favicon.io/emoji-favicons/money-mouth-face/ -->
-  <link rel="icon" href="/static/images/favicon.ico"/>
-  <link rel="stylesheet" href="/static/styles/styles.css"/>
-  <script type="text/javascript" src="/static/bootstrap_dark/mdb.min.js"></script>
+  <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}"/>
+  <script type="text/javascript" src="{{ url_for('static', filename='bootstrap_dark/mdb.min.js') }}"></script>
   <title>Stringing manager: {% block title %}{% endblock %}</title>
 </head>
 <body>
 
 {% macro flash_alert(category, message) -%}
-  {% set alert_class = "danger" if category == "error" else ("info" if category == "message" else message) %}
+  {% set alert_class = "danger" if category == "error" else ("info" if category == "message" else category) %}
   <div class="alert alert-{{ alert_class }} alert-dismissible border fade show" role="alert">
     <i class="bi bi-{{ "exclamation-triangle" if category == "error" else ("check-circle" if category == "success" else "info-circle") }}"></i> {{ message }}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -93,7 +93,7 @@
           </svg>
           Stringing Manager
         </a>
-        <span style="margin-top: 10px;">Hello {{ current_user.name }}</span>
+        {%  if current_user.is_authenticated %}<span style="margin-top: 10px;">Hello {{ current_user.name }}</span>{% endif %}
       </div>
 
       <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
@@ -136,7 +136,7 @@
 
 <script type="text/javascript">{% block script %}{% endblock %}</script>
 
-<script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='javascripts/index.js') }}"></script>
 {% block include_internal_script %}{% endblock %}
 
 </body>
