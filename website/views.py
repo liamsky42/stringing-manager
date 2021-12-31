@@ -180,48 +180,67 @@ def racquets():
 @login_required
 def stringings():
     if request.method == "POST":
-        customer_id = form_value_to_int(request.form.get("customer"))
-        racquet_id = form_value_to_int(request.form.get("raquet"))
-        tension = form_value_to_float(request.form.get("tension"))
-        string_type = form_value_to_string(request.form.get("string_type"))
-        include_string = form_value_to_bool(request.form.get("include_string"))
-        price = form_value_to_float(request.form.get("price"))
+        stringing_id = request.form.get("id", type=int)
+        customer_id = request.form.get("customer", type=int)
+        racquet_id = request.form.get("raquet", type=int)
+        tension = request.form.get("tension", type=float)
+        string_type = request.form.get("string_type", type=str)
+        include_string = request.form.get("include_string", type=bool)
+        price = request.form.get("price", type=float)
         received_date = form_value_to_datetime(request.form.get("date_received"))
         finished_date = form_value_to_datetime(request.form.get("date_finished"))
         returned_date = form_value_to_datetime(request.form.get("date_returned"))
 
-        if not customer_id or not racquet_id or not tension or not price or not received_date:
+        if not stringing_id and (not customer_id or not racquet_id or not tension or not price or not received_date):
             flash("please fill all required fields", category="error")
         else:
-            stringing = Stringing.query.filter_by(customer_id=customer_id, racquet_id=racquet_id, tension=tension,
-                                                  string_type=string_type,
-                                                  include_string=include_string,
-                                                  price=price,
-                                                  received_date=received_date,
-                                                  finished_date=finished_date,
-                                                  returned_date=returned_date).first()
-            if stringing:
-                flash("stringing already exists", category="error")
-            else:
-                new_stringing = Stringing(
-                    customer_id=customer_id, racquet_id=racquet_id, tension=tension, string_type=string_type,
-                    include_string=include_string, price=price, received_date=received_date,
-                    finished_date=finished_date,
-                    returned_date=returned_date)
+            if stringing_id:
+                # Update
+                stringing = Stringing.query.get(stringing_id)
 
-                db.session.add(new_stringing)
-                db.session.commit()
+                if not stringing:
+                    flash(f"stringing with id {stringing_id} does not exist", category="error")
+                else:
+                    if finished_date:
+                        stringing.finished_date = finished_date
+
+                    if returned_date:
+                        stringing.returned_date = returned_date
+
+                    db.session.commit()
+            else:
+                # Create
+                stringing = Stringing.query.filter_by(customer_id=customer_id, racquet_id=racquet_id, tension=tension,
+                                                      string_type=string_type,
+                                                      include_string=include_string,
+                                                      price=price,
+                                                      received_date=received_date,
+                                                      finished_date=finished_date,
+                                                      returned_date=returned_date).first()
+                if stringing:
+                    flash("stringing already exists", category="error")
+                else:
+                    pass
+                    # new_stringing = Stringing(
+                    #     customer_id=customer_id, racquet_id=racquet_id, tension=tension, string_type=string_type,
+                    #     include_string=include_string, price=price, received_date=received_date,
+                    #     finished_date=finished_date,
+                    #     returned_date=returned_date)
+                    #
+                    # db.session.add(new_stringing)
+                    # db.session.commit()
 
         return redirect(url_for("views.stringings"))
 
     stringings = Stringing.query.all()
     racquets = Racquet.query.join(Brand).order_by(Racquet.release_year.desc(), Brand.name, Racquet.model).all()
+    racquets_by_brands = group_racquets_by_brand(racquets)
     customers = Customer.query.all()
 
-    racquets_by_brands = group_racquets_by_brand(racquets)
+    edit_id = request.args.get("id", default=None, type=int)
 
     return render_template("stringings.jinja2", user=current_user, stringings=stringings, customers=customers,
-                           racquets_by_brands=racquets_by_brands)
+                           racquets_by_brands=racquets_by_brands, edit_id=edit_id)
 
 
 @views.route("/payments", methods=["GET", "POST"])

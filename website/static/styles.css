@@ -40,6 +40,14 @@ table .col-action {
     text-align: end;
 }
 
+table tbody tr form [type="submit"] {
+    visibility: hidden;
+}
+
+table tbody tr:hover form [type="submit"] {
+    visibility: unset;
+}
+
 select optgroup,
 select option {
     background-color: #424242;

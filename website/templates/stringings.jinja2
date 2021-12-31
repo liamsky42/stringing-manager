@@ -6,7 +6,7 @@
 
 {% block main %}
   <h1 class="display-2">Stringings <i class="bi bi-table"></i></h1>
-  <hr class="title-separator" />
+  <hr class="title-separator"/>
   <table class="table table-striped table-dark table-hover table-bordered">
     <thead>
     <tr>
@@ -26,6 +26,9 @@
     <tbody>
     {% for stringing in stringings %}
       <tr>
+        {% if edit_id == stringing.id %}
+          <form action="{{ url_for(request.endpoint) }}" method="post">
+        {% endif %}
         <td>{{ stringing.customer.first_name }} {{ stringing.customer.last_name }}</td>
         <td>
           {{ stringing.racquet.model }}
@@ -41,17 +44,43 @@
         <td>
           {% if stringing.received_date %}{{ stringing.received_date.strftime("%d/%m/%Y") }}{% else %}-{% endif %}</td>
         <td>
-          {% if stringing.finished_date %}{{ stringing.finished_date.strftime("%d/%m/%Y") }}{% else %}-{% endif %}</td>
+          {% if edit_id == stringing.id %}
+            <input type="date"
+                   name="date_finished"
+                   class="form-control form-control-sm"
+                   placeholder="Finished"
+                   value="{% if stringing.finished_date %}{{ stringing.finished_date.strftime("%Y-%m-%d") }}{% endif %}"
+            />
+          {% else %}
+            {% if stringing.finished_date %}{{ stringing.finished_date.strftime("%d/%m/%Y") }}{% else %}-{% endif %}</td>
+          {% endif %}
         <td>
-          {% if stringing.returned_date %}{{ stringing.returned_date.strftime("%d/%m/%Y") }}{% else %}-{% endif %}</td>
+          {% if edit_id == stringing.id %}
+            <input type="date"
+                   name="date_returned"
+                   class="form-control form-control-sm"
+                   placeholder="Returned"
+                   value="{% if stringing.returned_date %}{{ stringing.returned_date.strftime("%Y-%m-%d") }}{% endif %}"
+            />
+          {% else %}
+            {% if stringing.returned_date %}{{ stringing.returned_date.strftime("%d/%m/%Y") }}{% else %}-{% endif %}</td>
+          {% endif %}
         <td>{% if stringing.payments and stringing.payments|length > 0 %}
           {{ "$%.2f"|format(stringing.payments|sum(attribute='payed')) }}{% else %}-{% endif %}</td>
         <td>
+          {% if edit_id == stringing.id %}
+            <input type="hidden" name="id" value="{{ stringing.id }}"/>
+            <button class="btn btn-success btn-sm" type="submit"><i class="bi bi-pencil-square"></i> Save</button>
+          {% else %}
           <form action="{{ url_for(request.endpoint) }}" method="get">
             <input type="hidden" name="id" value="{{ stringing.id }}"/>
             <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-pencil-square"></i> Edit</button>
           </form>
+          {% endif %}
         </td>
+        {% if edit_id == stringing.id %}
+          </form>
+        {% endif %}
       </tr>
     {% endfor %}
     </tbody>
